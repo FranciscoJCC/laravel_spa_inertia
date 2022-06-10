@@ -1,10 +1,26 @@
 <script setup>
     import { Link } from '@inertiajs/inertia-vue3';
+    import { ref, watch, reactive } from 'vue';
     import AppLayout from '@/Layouts/AppLayout.vue';
+    import { Inertia } from '@inertiajs/inertia';
 
     const props = defineProps({
         notes : Array,
     });
+
+    const q = ref(null);
+
+    /* watch(q, () =>{
+        Inertia.get(route('notes.index', {q}, {},{
+            preserveState:true,
+        }));
+    }); */
+    const search = () =>{
+        let q = q.value;
+        Inertia.get(route('notes.index',{q}), {}, {
+            preserveState:ture
+        });
+    };
 
 </script>
 
@@ -27,7 +43,11 @@
                     </div>
                     <div class="md:col-span-2 mt-5 md:mt-0">
                         <div class="shadow bg-white md:rounded-md p-4">
-                            <Link :href="route('notes.create')" class="bg-blue-500 text-white font-bold py-2 px-4 my-2 rounded-md ">Nueva nota</Link>
+                            <div class="flex justify-between">
+                                <input type="text" class="form-input rounded-md shadow-sm" placeholder="Buscar..." v-model="q" @keyup="search()">
+                                <Link :href="route('notes.create')" class="bg-blue-500 text-white font-bold py-2 px-4 my-2 rounded-md ">Nueva nota</Link>
+                            </div>
+                            <hr class="my-6">
                             <table>
                                 <tr v-for="note in notes" :key="note.id">
                                     <td class="border px-4 py-2">
